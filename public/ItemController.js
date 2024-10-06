@@ -48,9 +48,9 @@ class ItemController {
                 itemInfo.id,
                 x,
                 y,
-                itemInfo.width,
-                itemInfo.height,
-                itemInfo.image
+                itemInfo.width / 1.5,
+                itemInfo.height / 1.5,
+                itemInfo.image,
             );
 
             this.items.push(item);

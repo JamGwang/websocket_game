@@ -3,29 +3,44 @@ import { sendEvent } from "./Socket.js";
 class Score {
   score = 0;
   HIGH_SCORE_KEY = 'highScore';
-  stageChange = true;
+  currentStage = 1000;  // 스테이지 초기값 1000
+  stageChange = [];
 
-  constructor(ctx, scaleRatio) {
+  constructor(ctx, scaleRatio, stageData, itemData, itemController) {
     this.ctx = ctx;
     this.canvas = ctx.canvas;
-    this.scaleRatio = scaleRatio;
+    this.scaleRatio = scaleRatio
+    this.stageData = stageData;
+    this.itemData = itemData;
+    this.itemController = itemController; // itemController 의 stage 갱신 전달용
+    this.stageChange.push(this.currentStage);
   }
 
   update(deltaTime) {
     this.score += deltaTime * 0.001;
-    // 점수가 100점 이상이 될 시 서버에 메세지 전송
-    if (Math.floor(this.score) === 10 && this.stageChange) {
-      this.stageChange = false;
-      sendEvent(11, { currentStage: 1000, targetStage: 1001 });
+    const nextStageInfo = this.stageData.data.find((stage) => stage.id === this.currentStage + 1);
+    if (Math.floor(this.score) >= nextStageInfo.score && !this.stageChange.includes(nextStageInfo.id)) {
+      this.stageChange.push(nextStageInfo.id);
+      sendEvent(11, { currentStage: this.currentStage, targetStage: nextStageInfo.id });
+      this.currentStage = nextStageInfo.id;
+      console.log(this.currentStage);
     }
   }
 
   getItem(itemId) {
-    this.score += 0;
+    const itemInfo = this.itemData.data.find((item) => item.id === itemId);
+    if (itemInfo) {
+      this.score += itemInfo.score;
+      sendEvent(21, { itemId, timestamp: Date.now() });
+    }
   }
 
   reset() {
     this.score = 0;
+
+    if (this.itemController) {
+      this.itemController.setCurrentStage(this.currentStage);
+    }
     //this.stageChange = true;
   }
 

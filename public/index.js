@@ -5,7 +5,9 @@ import Score from './Score.js';
 import ItemController from './ItemController.js';
 import './Socket.js';
 import { sendEvent } from './Socket.js';
-import itemUnlock from './assets/item_unlock.json' with {type: 'json'};
+import itemUnlockData from './assets/item_unlock.json' with {type: 'json'};
+import itemData from './assets/item.json' with {type: 'json'};
+import stageData from './assets/stage.json' with {type: 'json'};
 
 
 const canvas = document.getElementById('game');
@@ -38,16 +40,11 @@ const CACTI_CONFIG = [
 ];
 
 // 아이템
-const ITEM_CONFIG = [
-  { width: 50 / 1.5, height: 50 / 1.5, id: 1, image: 'images/items/pokeball_red.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_yellow.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_purple.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_orange.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 5, image: 'images/items/pokeball_cyan.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 6, image: 'images/items/pokeball_pink.png' }
-];
+const ITEM_DATA = itemData.data;
 // (Item Unlock 전달용)
-const ITEM_UNLOK = itemUnlock.data;
+const ITEM_UNLOK = itemUnlockData.data;
+// 스테이지 정보
+const STAGE_DATA = stageData.data;
 
 // 게임 요소들
 let player = null;
@@ -98,7 +95,7 @@ function createSprites() {
 
   cactiController = new CactiController(ctx, cactiImages, scaleRatio, GROUND_SPEED);
   // 아이템 생성 인스턴스
-  const itemImages = ITEM_CONFIG.map((item) => {
+  const itemImages = ITEM_DATA.map((item) => {
     const image = new Image();
     image.src = item.image;
     return {
@@ -110,7 +107,7 @@ function createSprites() {
   });
   itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED, ITEM_UNLOK);
   // 점수 관리 인스턴스
-  score = new Score(ctx, scaleRatio);
+  score = new Score(ctx, scaleRatio, stageData, itemData, itemController);
 }
 
 function getScaleRatio() {
@@ -216,11 +213,14 @@ function gameLoop(currentTime) {
     score.update(deltaTime);
   }
 
+  // 게임 오버
   if (!gameover && cactiController.collideWith(player)) {
     gameover = true;
     score.setHighScore();
     setupGameReset();
   }
+
+  // 아이템 획득
   const collideWithItem = itemController.collideWith(player);
   if (collideWithItem && collideWithItem.itemId) {
     score.getItem(collideWithItem.itemId);
