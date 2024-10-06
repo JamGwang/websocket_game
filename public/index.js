@@ -5,6 +5,8 @@ import Score from './Score.js';
 import ItemController from './ItemController.js';
 import './Socket.js';
 import { sendEvent } from './Socket.js';
+import itemUnlock from './assets/item_unlock.json' with {type: 'json'};
+
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -40,8 +42,12 @@ const ITEM_CONFIG = [
   { width: 50 / 1.5, height: 50 / 1.5, id: 1, image: 'images/items/pokeball_red.png' },
   { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_yellow.png' },
   { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_purple.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_cyan.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_orange.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 5, image: 'images/items/pokeball_cyan.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 6, image: 'images/items/pokeball_pink.png' }
 ];
+// (Item Unlock 전달용)
+const ITEM_UNLOK = itemUnlock.data;
 
 // 게임 요소들
 let player = null;
@@ -68,7 +74,7 @@ function createSprites() {
   // 땅
   const groundWidthInGame = GROUND_WIDTH * scaleRatio;
   const groundHeightInGame = GROUND_HEIGHT * scaleRatio;
-
+  // 플레이어 인스턴스
   player = new Player(
     ctx,
     playerWidthInGame,
@@ -77,9 +83,9 @@ function createSprites() {
     maxJumpHeightInGame,
     scaleRatio,
   );
-
+  // 배경 이동 인스턴스
   ground = new Ground(ctx, groundWidthInGame, groundHeightInGame, GROUND_SPEED, scaleRatio);
-
+  // 장애물 생성 인스턴스
   const cactiImages = CACTI_CONFIG.map((cactus) => {
     const image = new Image();
     image.src = cactus.image;
@@ -91,7 +97,7 @@ function createSprites() {
   });
 
   cactiController = new CactiController(ctx, cactiImages, scaleRatio, GROUND_SPEED);
-
+  // 아이템 생성 인스턴스
   const itemImages = ITEM_CONFIG.map((item) => {
     const image = new Image();
     image.src = item.image;
@@ -102,9 +108,8 @@ function createSprites() {
       height: item.height * scaleRatio,
     };
   });
-
-  itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED);
-
+  itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED, ITEM_UNLOK);
+  // 점수 관리 인스턴스
   score = new Score(ctx, scaleRatio);
 }
 

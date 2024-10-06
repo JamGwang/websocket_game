@@ -11,7 +11,7 @@ export const moveStageHandler = (userId, payload) => {
     return { status: 'fail', message: 'No stages found for user' };
   }
 
-  // 오름차순 정렬 후 가장 큰 스테이지 ID 확인 = 가장 상위의 스테이지 = 현재 스테이지
+  // 오름차순 -> 가장 큰 스테이지 ID 확인 <- 유저의 현재 스테이지
   currentStages.sort((a, b) => a.id - b.id);
   const currentStage = currentStages[currentStages.length - 1];
 
@@ -21,12 +21,10 @@ export const moveStageHandler = (userId, payload) => {
   }
 
   // 점수 검증
+  // 스테이지 달성 조건에 대한 점수 검증 구간. (과제)
   const serverTime = Date.now();
-  const elapsedTime = (serverTime - currentStage.timestamp) / 1000; // 초 단위로 계산
-
-  // 1초당 1점, 100점이상 다음스테이지 이동, 오차범위 5
-  // 클라이언트와 서버 간의 통신 지연시간을 고려해서 오차범위 설정
-  // elapsedTime 은 100 이상 105 이하 일 경우만 통과
+  const elapsedTime = (serverTime - currentStage.timestamp) / 1000; // 초 단위로 계산  
+  
   if (elapsedTime < 100 || elapsedTime > 105) {
     return { status: 'fail', message: 'Invalid elapsed time' };
   }

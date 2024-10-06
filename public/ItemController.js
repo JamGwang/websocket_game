@@ -9,12 +9,14 @@ class ItemController {
     items = [];
 
 
-    constructor(ctx, itemImages, scaleRatio, speed) {
+    constructor(ctx, itemImages, scaleRatio, speed, curstageItems) {
         this.ctx = ctx;
         this.canvas = ctx.canvas;
         this.itemImages = itemImages;
         this.scaleRatio = scaleRatio;
         this.speed = speed;
+        this.currentStage = 1000;
+        this.curstageItems = curstageItems
 
         this.setNextItemTime();
     }
@@ -31,30 +33,36 @@ class ItemController {
     }
 
     createItem() {
-        const index = this.getRandomNumber(0, this.itemImages.length - 1);
-        const itemInfo = this.itemImages[index];
-        const x = this.canvas.width * 1.5;
-        const y = this.getRandomNumber(
-            10,
-            this.canvas.height - itemInfo.height
-        );
+        const stageItems = this.curstageItems.find(
+            (stage) => stage.stage_id === this.currentStage,
+        ).item_id;
+        if (stageItems) {
+            const availableItems = this.itemImages.filter((item) => stageItems.includes(item.id));
+            const index = this.getRandomNumber(0, availableItems.length - 1);
+            const itemInfo = availableItems[index];
+            const x = this.canvas.width * 1.5;
+            const y = this.getRandomNumber(10, this.canvas.height - itemInfo.height);
 
-        const item = new Item(
-            this.ctx,
-            itemInfo.id,
-            x,
-            y,
-            itemInfo.width,
-            itemInfo.height,
-            itemInfo.image
-        );
+            const item = new Item(
+                this.ctx,
+                itemInfo.id,
+                x,
+                y,
+                itemInfo.width,
+                itemInfo.height,
+                itemInfo.image
+            );
 
-        this.items.push(item);
+            this.items.push(item);
+        }
     }
 
+    setCurrentStage(stage_id) {
+        this.currentStage = stage_id;
+    }
 
     update(gameSpeed, deltaTime) {
-        if(this.nextInterval <= 0) {
+        if (this.nextInterval <= 0) {
             this.createItem();
             this.setNextItemTime();
         }
@@ -84,7 +92,9 @@ class ItemController {
 
     reset() {
         this.items = [];
+        this.currentStage = 1000;
     }
+
 }
 
 export default ItemController;

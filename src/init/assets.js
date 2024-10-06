@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 // path.dirname() 함수는 파일 경로에서 디렉토리 경로만 추출 (파일 이름을 제외한 디렉토리의 전체 경로)
 const __dirname = path.dirname(__filename);
 // 디렉토리 경로 기반 상대경로
-const basePath = path.join(__dirname, '../../assets');
+const basePath = path.join(__dirname, '../../public/assets'); // assets폴더 경로 이동-/public
 
 // 파일 읽는 함수
 // 비동기 병렬로 파일을 읽는다. 
