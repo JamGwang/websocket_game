@@ -27,5 +27,5 @@ export const itemPickUpHandler = (userId, payload) => {
 
   // 아이템 기록 추가
   addItem(userId, { id: itemId, timestamp });
-  return { status: 'success' };
+  return { status: '아이템 획득' };
 };

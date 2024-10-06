@@ -106,7 +106,7 @@ function createSprites() {
     };
   });
   itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED, ITEM_UNLOK);
-  // 점수 관리 인스턴스
+  // 점수 인스턴스
   score = new Score(ctx, scaleRatio, stageData, itemData, itemController);
 }
 

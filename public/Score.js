@@ -17,7 +17,12 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.001;
+    // 현재 스테이지 초당 점수 가져오기
+    const currentStageInfo = this.stageData.data.find((stage) => stage.id === this.currentStage);
+    const scorePerSecond = currentStageInfo? currentStageInfo.scorePerSecond : 1;
+
+    this.score += deltaTime * 0.001 * scorePerSecond;
+    // 다음 스테이지 점수에 도달했는지, 이미 변경된 스테이지 인지 확인
     const nextStageInfo = this.stageData.data.find((stage) => stage.id === this.currentStage + 1);
     if (Math.floor(this.score) >= nextStageInfo.score && !this.stageChange.includes(nextStageInfo.id)) {
       this.stageChange.push(nextStageInfo.id);
@@ -29,6 +34,7 @@ class Score {
 
   getItem(itemId) {
     const itemInfo = this.itemData.data.find((item) => item.id === itemId);
+    //console.log(itemInfo+ "  "+ itemId);
     if (itemInfo) {
       this.score += itemInfo.score;
       sendEvent(21, { itemId, timestamp: Date.now() });

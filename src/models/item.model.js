@@ -5,7 +5,7 @@ export const initItems = (userId) => {
 };
 
 // 획득 아이템 추가
-export const addItem = (userId, item) => {
+export const addItem = (userId, item) => {    
     if (userItems[userId]) {
         userItems[userId].push(item);
     }
