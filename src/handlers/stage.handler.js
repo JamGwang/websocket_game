@@ -4,6 +4,7 @@
 import { getStage, setStage } from '../models/stage.model.js';
 import { getGameAssets } from '../init/assets.js';
 import { calculateTotalScore } from '../utils/calculate.js';
+import { getUserItems } from '../models/item.model.js';
 
 export const moveStageHandler = (userId, payload) => {
   // 유저의 현재 스테이지 배열을 가져오고, 최대 스테이지 ID를 찾는다.
@@ -29,13 +30,11 @@ export const moveStageHandler = (userId, payload) => {
     return { status: 'fail', message: '다음 스테이지가 존재하지 않습니다.' };
   }
 
-  // 현재 스테이지 정보
-
   // 점수 검증
   // 스테이지 달성 조건에 대한 점수 검증 구간. (과제)
-  const serverTime = Date.now();
-  const elapsedTime = (serverTime - currentStage.timestamp) / 1000; // 초 단위로 계산
-  const totalScore = calculateTotalScore(userId) + elapsedTime;
+  const serverTime = Date.now();  
+  const userItems = getUserItems(userId);
+  const totalScore = calculateTotalScore(currentStages, userItems, serverTime, true);
   
   if (targetStageInfo.score > totalScore) {
     console.log("도달 스테이지 점수" + targetStageInfo.score + " 클라이언트 점수" + totalScore);

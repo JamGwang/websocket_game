@@ -76,7 +76,22 @@ class Score {
     const highScorePadded = highScore.toString().padStart(6, 0);
 
     this.ctx.fillText(scorePadded, scoreX, y);
-    this.ctx.fillText(`HI ${highScorePadded}`, highScoreX, y);
+    this.ctx.fillText(`HIGH ${highScorePadded}`, highScoreX, y);
+
+    //스테이지 표시
+    this.drawStage();
+  }
+
+  drawStage() {
+    const stageY = 50 * this.scaleRatio;
+    const fontSize = 30 * this.scaleRatio;
+    this.ctx.font = `${fontSize}px serif`;
+    this.ctx.fillStyle = 'black';
+
+    const stageText = `Stage ${this.currentStage - 999}`; // 스테이지 번호 계산
+    const stageX = this.canvas.width / 2 - this.ctx.measureText(stageText).width / 2;
+
+    this.ctx.fillText(stageText, stageX, stageY);
   }
 }
 

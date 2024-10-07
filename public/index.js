@@ -218,6 +218,7 @@ function gameLoop(currentTime) {
     gameover = true;
     score.setHighScore();
     setupGameReset();
+    sendEvent(3,{timestamp: Date.now()});
   }
 
   // 아이템 획득
