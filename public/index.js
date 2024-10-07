@@ -162,7 +162,7 @@ function reset() {
   hasAddedEventListenersForRestart = false;
   gameover = false;
   waitingToStart = false;
-
+  itemController.reset();
   ground.reset();
   cactiController.reset();
   score.reset();

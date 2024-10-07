@@ -22,7 +22,7 @@ export const gameEnd = (uuid, payload) => {
     const stages = getStage(uuid);
 
     if (!stages.length) {
-        return { status: 'fail', message: 'No stages found for user' };
+        return { status: 'fail', message: '유저의 스테이지 정보를 불러올 수 없습니다.' };
     }
 
     // 총 점수 계산 (수정 필요)
@@ -30,11 +30,11 @@ export const gameEnd = (uuid, payload) => {
 
     // 점수와 타임스탬프 검증 (수정 필요)
     if (Math.abs(score - totalScore) > 5) {
-        return { status: 'fail', message: "Score verification failed" }
+        return { status: 'fail', message: "점수 검증 실패" }
     }
 
     // DB 저장 가정
     // ex) setResult(userId, score, timestamp) 
 
-    return { status: '게임 종료', message: "Game ended", score };
+    return { status: '게임 종료', message: "게임 종료", score };
 };

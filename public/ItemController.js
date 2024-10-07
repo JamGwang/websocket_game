@@ -93,6 +93,7 @@ class ItemController {
     reset() {
         this.items = [];
         this.currentStage = 1000;
+        this.setNextItemTime();
     }
 
 }

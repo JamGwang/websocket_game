@@ -28,7 +28,8 @@ class Score {
       this.stageChange.push(nextStageInfo.id);
       sendEvent(11, { currentStage: this.currentStage, targetStage: nextStageInfo.id });
       this.currentStage = nextStageInfo.id;
-      console.log(this.currentStage);
+      if(this.itemController)
+        this.itemController.setCurrentStage(this.currentStage);
     }
   }
 
@@ -43,11 +44,10 @@ class Score {
 
   reset() {
     this.score = 0;
-
+    this.currentStage = 1000;    
     if (this.itemController) {
       this.itemController.setCurrentStage(this.currentStage);
-    }
-    //this.stageChange = true;
+    }    
   }
 
   setHighScore() {
